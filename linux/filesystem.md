@@ -1,1 +1,2 @@
+## TO CHECK AND REPAIR FILE SYSTEM
 fsck /dev/sda6
