@@ -1,6 +1,16 @@
 ## RSA 2048 PRIVATE KEY GENERATION
 
+- openssl genrsa -des3 -out private.pem 2048
+
+or
+
+- openssl genpkey -algorithm RSA -out key.pem \
+    -pkeyopt rsa_keygen_bits:2048 -pkeyopt rsa_keygen_pubexp:3
+
 ## PUBLIC KEY GENERATION
+
+- openssl rsa -in private.pem -outform PEM -pubout -out public.pem
+
 
 ## SIGNATURE FOR FILE
 
