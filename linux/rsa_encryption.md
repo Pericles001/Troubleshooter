@@ -7,6 +7,8 @@ or
 - openssl genpkey -algorithm RSA -out key.pem \
     -pkeyopt rsa_keygen_bits:2048 -pkeyopt rsa_keygen_pubexp:3
 
+- openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -pkeyopt rsa_keygen_pubexp:3 -out madjovi_private.pem
+
 ## PUBLIC KEY GENERATION
 
 - openssl rsa -in private.pem -outform PEM -pubout -out public.pem
