@@ -9,3 +9,11 @@
 - userdel (-r: removes all configuration files for the user) uname
 
 - cat /etc/passwd | awk -F: '{print $1}' (read all the users in linux)
+
+## list all users 
+
+- cat /etc/passwd | awk -F: '{print $1}'\n
+
+## delete a user
+
+- userdel -m username
