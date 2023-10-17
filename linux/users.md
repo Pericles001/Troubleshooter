@@ -17,3 +17,9 @@
 ## delete a user
 
 - userdel -m username
+
+## SET ACL
+
+- sudo setfacl -m u:user_b_s:rwx, g:secret:r-x,o::--- 2_secret/
+- sudo setfacl -m g:secret:r-x 3_confidential/
+- sudo setfacl -m g:secret:r-x 4_unclassified/
