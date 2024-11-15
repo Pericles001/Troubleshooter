@@ -1,52 +1,72 @@
 ### Step-by-Step Guide to Extend the Root Partition
 
-1.  **Create a New Partition with Free Space**: Use `parted` to create a new partition in the free space.
+This guide outlines the process to extend the root partition by creating a new partition, configuring it for LVM, and resizing the filesystem.
 
-    bash
+---
 
-    Copy code
+1.  **Create a New Partition with Free Space**
 
-    `sudo parted /dev/sda
+    Use `parted` to create a new partition in the free space on your disk.
+
+    \`\`\`bash
+    sudo parted /dev/sda
     (parted) mkpart primary 37.6GB 137.6GB
-    (parted) print  # Confirm the new partition is created
-    (parted) quit`
+    (parted) print   # Confirm the new partition is created
+    (parted) quit
+    \`\`\`
 
-2.  **Format the New Partition as a Physical Volume (PV)**: Format the new partition for LVM use.
+    - **Note**: Adjust the start and end points (`37.6GB` and `137.6GB`) based on the available free space on your disk.
 
-    bash
+2.  **Format the New Partition as a Physical Volume (PV)**
 
-    Copy code
+    Format the newly created partition for use with Logical Volume Management (LVM).
 
-    `sudo pvcreate /dev/sda4  # Assuming /dev/sda4 is the newly created partition`
+    \`\`\`bash
+    sudo pvcreate /dev/sda4   # Assuming /dev/sda4 is the new partition
+    \`\`\`
 
-3.  **Extend the Volume Group (VG)**: Add the new physical volume to your existing volume group (`ubuntu--vg`).
+3.  **Extend the Volume Group (VG)**
 
-    bash
+    Add the new physical volume to your existing volume group (e.g., `ubuntu--vg`).
 
-    Copy code
+    \`\`\`bash
+    sudo vgextend ubuntu--vg /dev/sda4
+    \`\`\`
 
-    `sudo vgextend ubuntu--vg /dev/sda4`
+4.  **Extend the Logical Volume (LV)**
 
-4.  **Extend the Logical Volume (LV)**: Increase the size of the logical volume to 100GB.
+    Increase the size of the logical volume. Here, we’re expanding it to a total of 100GB.
 
-    bash
+    \`\`\`bash
+    sudo lvextend -L 100G /dev/ubuntu--vg/ubuntu--lv
+    \`\`\`
 
-    Copy code
+    - **Note**: Replace `100G` with your desired total size or specify `-l +100%FREE` to use all available free space in the volume group.
 
-    `sudo lvextend -L 100G /dev/ubuntu--vg/ubuntu--lv`
+5.  **Resize the Filesystem**
 
-5.  **Resize the Filesystem**: Resize the filesystem to use the newly allocated space.
+    Adjust the filesystem to occupy the newly allocated space in the logical volume.
 
-    bash
+    \`\`\`bash
+    sudo resize2fs /dev/ubuntu--vg/ubuntu--lv
+    \`\`\`
 
-    Copy code
+6.  **Verify the New Size**
 
-    `sudo resize2fs /dev/ubuntu--vg/ubuntu--lv`
+    Confirm that the root filesystem has been resized successfully.
 
-6.  **Verify the New Size**: After completing the steps, verify the new size.
+    \`\`\`bash
+    df -h /
+    \`\`\`
 
-    bash
+    - **Output**: This command displays the updated size and usage of the root partition.
 
-    Copy code
+---
 
-    `df -h /`
+### Additional Notes
+
+- **Physical Volume (PV)**: This is a partition or disk configured for use with LVM. The `pvcreate` command prepares the partition for inclusion in a volume group.
+- **Volume Group (VG)**: A volume group aggregates physical volumes, making it easier to manage and resize storage.
+- **Logical Volume (LV)**: Logical volumes are like partitions within a volume group and can be resized to add more storage as needed.
+
+By following these steps, you can successfully extend your root partition and allocate more storage to the filesystem.
